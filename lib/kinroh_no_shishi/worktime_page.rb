@@ -1,36 +1,43 @@
 require 'watir'
 require 'webdrivers/chromedriver'
+require_relative 'worktime_config'
 
 class KinrohNoShishi
   class WorktimePage
-    attr_reader :browser
+    attr_reader :browser, :worktime_config
 
     def initialize(browser)
       @browser = browser
     end
 
-    def fill_form(current_months_day)
+    # 申請に必要な情報を自動入力する
+    # YAML テンプレートを利用する
+    def fill_form(worktime_template_name:, current_months_day:)
       # インデックス値指定は 0 始まり
       # ページ中で使われている日付と対応する
       @day_index = current_months_day - 1
+      worktime_config = WorktimeConfig.load(worktime_template_name)
 
-      worktime_page_link.click            # 個人申請
+      worktime_page_link.click   # 個人申請
 
-      # ブラウザの表示を中央にスクロール
-      @browser.scroll.to(:center)
+      scroll_down_window
 
-      application_checkbox.click          # 申請
-      set_actual_worktype_selection('2')  # ｵﾌｨｽ（技術）
-      set_standby_field('1')              # 待機
-      set_actual_worktime_start('09:00')  # 確定出勤
-      set_actual_worktime_end('17:45')    # 確定退勤
-      set_rest_time('00:45')              # 休憩時間
-      set_commutation_cost('0')           # 変動交通費
+      application_checkbox.click # 申請
+
+      set_actual_worktype_selection(worktime_config.fetch(:actual_work_type))       # 実績勤務区分
+      set_standby_field(            worktime_config.fetch(:standby))                # 待機
+      set_actual_worktime_start(    worktime_config.fetch(:actual_worktime_start))  # 確定出勤
+      set_actual_worktime_end(      worktime_config.fetch(:actual_worktime_end))    # 確定退勤
+      set_rest_time(                worktime_config.fetch(:rest_time))              # 休憩時間
+      set_commutation_cost(         worktime_config.fetch(:commutation_cost))       # 変動交通費
+      set_application_comment(      worktime_config.fetch(:application_comment))    # 申請コメント
     end
 
-    # 一時保存
+    # 申請ボタンを押して入力内容を保存
     def save
-      @browser.button(name: 'hozon').click
+      application_confirm_button.click
+      application_button.click
+
       @browser.alert.ok
     end
 
@@ -39,6 +46,17 @@ class KinrohNoShishi
     end
 
     private
+
+    # 月の後半... 15日以降の場合 Web ブラウザの画面をスクロールさせる
+    # 操作対象の要素が見つからないのを防ぐ
+    # ページの情報量的に、800px ほど下に移動すれば充分なはず
+    # HINT: @browser.scroll.by(top, left)
+    def scroll_down_window
+      # ブラウザの表示を中央にスクロール
+      @browser.scroll.to(:center) if @day_index >= 15
+
+      # @browser.scroll.by(-800, 0 if @day_index >= 15)
+    end
 
     # 確定出勤
     def set_actual_worktime_start(worktime)
@@ -72,6 +90,16 @@ class KinrohNoShishi
       @browser.checkbox(name: "shinseiFlag[#{@day_index}]")
     end
 
+    # 申請ボタン
+    def application_button
+      @browser.element(name: 'shinsei')
+    end
+
+    # 申請確認ボタン
+    def application_confirm_button
+      @browser.element(name: 'shinseiKakunin')
+    end
+
     # 待機
     def set_standby_field(num_flag)
       # ON : 1
@@ -92,6 +120,10 @@ class KinrohNoShishi
         # 2020/03/31 分の選択肢からは 09001730 という項目が追加された模様
         # %Q(document.querySelector('a#id_kinmu_pull_a_#{day_index}_1').click())
       )
+    end
+
+    def set_application_comment(comment)
+      @browser.text_field(id: "id_value_char_#{@day_index}").set(comment)
     end
 
     def worktime_page_link

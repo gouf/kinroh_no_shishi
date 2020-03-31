@@ -21,9 +21,11 @@ worktime_page =
     password:         ENV['KINROH_NO_SHISHI_PASSWORD']
   )
 
-current_months_day = 30 # 今月30日を自動入力の対象にする
-worktime_page.fill_form(current_months_day)
+worktime_page.fill_form(
+  current_months_day: 31, # 今月n日を自動入力の対象にする
+  worktime_template_name: :work_at_home
+)
 
-worktime_page.save # 一時保存ボタンを押す
+worktime_page.save # 申請ボタンを押す
 
 worktime_page.close

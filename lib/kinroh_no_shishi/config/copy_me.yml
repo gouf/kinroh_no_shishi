@@ -1,0 +1,9 @@
+#
+# サンプル勤務内容
+#
+actual_work_type: '1'
+standby: '1'
+actual_worktime_start: '10:00'
+actual_worktime_end:   '19:00'
+rest_time:             '01:00'
+commutation_cost:      '800'
