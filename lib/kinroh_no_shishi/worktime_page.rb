@@ -36,9 +36,14 @@ class KinrohNoShishi
     # 申請ボタンを押して入力内容を保存
     def save
       application_confirm_button.click
-      application_button.click
+      application_button.wait_until { |button| button.text.eql?('申請する') }
+                        .wait_until(&:enabled?)
+                        .click
 
-      @browser.alert.ok
+      @browser.alert
+              .ok
+
+      _ = @browser.window.title # ページ遷移完了まで次の処理を待たせる
     end
 
     def close
@@ -89,12 +94,12 @@ class KinrohNoShishi
 
     # 申請ボタン
     def application_button
-      @browser.element(name: 'shinsei')
+      @browser.button(name: 'shinsei')
     end
 
     # 申請確認ボタン
     def application_confirm_button
-      @browser.element(name: 'shinseiKakunin')
+      @browser.button(name: 'shinseiKakunin')
     end
 
     # 待機
