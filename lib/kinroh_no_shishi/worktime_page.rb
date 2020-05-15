@@ -50,12 +50,9 @@ class KinrohNoShishi
     # 月の後半... 15日以降の場合 Web ブラウザの画面をスクロールさせる
     # 操作対象の要素が見つからないのを防ぐ
     # ページの情報量的に、800px ほど下に移動すれば充分なはず
-    # HINT: @browser.scroll.by(top, left)
+    # HINT: @browser.scroll.by(left, top)
     def scroll_down_window
-      # ブラウザの表示を中央にスクロール
-      @browser.scroll.to(:center) if @day_index >= 15
-
-      # @browser.scroll.by(-800, 0 if @day_index >= 15)
+      @browser.scroll.by(0, 800) if @day_index >= 15
     end
 
     # 確定出勤
