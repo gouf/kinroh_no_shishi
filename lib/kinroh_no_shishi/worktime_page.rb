@@ -18,7 +18,7 @@ class KinrohNoShishi
       @day_index = current_months_day - 1
       worktime_config = WorktimeConfig.load(worktime_template_name)
 
-      worktime_page_link.click   # 個人申請
+      goto_worktime_page   # 個人申請
 
       scroll_down_window
 
@@ -128,8 +128,8 @@ class KinrohNoShishi
       @browser.text_field(id: "id_value_char_#{@day_index}").set(comment)
     end
 
-    def worktime_page_link
-      @browser.div(id: 'kinou_200002')
+    def goto_worktime_page
+      @browser.goto('https://kinrou.sas-cloud.jp/kinrou/kojin/kintaiShinsei/')
     end
   end
 end
