@@ -57,7 +57,12 @@ class KinrohNoShishi
     # ページの情報量的に、800px ほど下に移動すれば充分なはず
     # HINT: @browser.scroll.by(left, top)
     def scroll_down_window
-      @browser.scroll.by(0, 800) if @day_index >= 15
+      return unless @day_index >= 15
+
+      @browser.scroll.by(0, 800)
+
+      # スクロール後、後続の別メソッドが次の操作に即座に移ると その操作に失敗するのでここで一旦待たせる
+      sleep 1
     end
 
     # 確定出勤
