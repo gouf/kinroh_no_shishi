@@ -2,8 +2,11 @@
 # サンプル勤務内容
 #
 actual_work_type: '1'
-standby: '1'
-actual_worktime_start: '10:00'
-actual_worktime_end:   '19:00'
-rest_time:             '01:00'
-commutation_cost:      '800'
+standby: '0' # 待機か否か (1 = 待機)
+reason_a: '' # 事由A 選択肢の CSS セレクタ (ID) を指定
+reason_b: '' # 事由B 選択肢の CSS セレクタ (ID) を指定
+application_comment:   '' # 申請コメント
+actual_worktime_start: '' # 10:00 形式
+actual_worktime_end:   '' # 19:00 形式
+rest_time:             '' # 1:00 形式
+commutation_cost:      '0' # 交通費
