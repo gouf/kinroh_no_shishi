@@ -82,7 +82,7 @@ class KinrohNoShishi
     # 休憩時間
     def set_rest_time(rest_time)
       browser.execute_script(
-        %Q(document.querySelector('input[name="dataList[#{@day_index}].column_2_59"]').value = '00:45')
+        %Q(document.querySelector('input[name="dataList[#{@day_index}].column_2_59"]').value = '#{rest_time}')
       )
     end
 
