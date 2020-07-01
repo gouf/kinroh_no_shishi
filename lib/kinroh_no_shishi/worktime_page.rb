@@ -25,6 +25,8 @@ class KinrohNoShishi
       application_checkbox.click # 申請
 
       set_actual_worktype_selection(worktime_config.fetch(:actual_work_type))       # 実績勤務区分
+      set_reason_a_selection(       worktime_config.fetch(:reason_a))               # 事由A
+      set_reason_b_selection(       worktime_config.fetch(:reason_b))               # 事由B
       set_standby_field(            worktime_config.fetch(:standby))                # 待機
       set_actual_worktime_start(    worktime_config.fetch(:actual_worktime_start))  # 確定出勤
       set_actual_worktime_end(      worktime_config.fetch(:actual_worktime_end))    # 確定退勤
@@ -63,6 +65,28 @@ class KinrohNoShishi
 
       # スクロール後、後続の別メソッドが次の操作に即座に移ると その操作に失敗するのでここで一旦待たせる
       sleep 1
+    end
+
+    def set_reason_a_selection(reason)
+      return if reason.length.zero?
+
+      # 事由A をクリック
+      @browser.execute_script(
+        %Q(document.querySelector('#id_jiyuua_name_select_#{@day_index}').click())
+      )
+      sleep 1 # 次の選択処理が動かないことがあるので待つ
+
+      # 事由 (eg. #id_jiyuu_pull_a_0_2) を選択
+      # FIXME: 他の事由も選択できるように書き換える
+      @browser.execute_script(
+        %Q(document.querySelector('#id_jiyuu_pull_a_0_2').click())
+      )
+    end
+
+    def set_reason_b_selection(reason)
+      # FIXME: Not implemented yet.
+
+      # document.querySelector('#id_jiyuub_name_select_0') # 事由B クリック (※ jiyuu + b 表記)
     end
 
     # 確定出勤
