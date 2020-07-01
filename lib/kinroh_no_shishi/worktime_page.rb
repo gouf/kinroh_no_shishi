@@ -140,16 +140,14 @@ class KinrohNoShishi
 
     # 実績勤務区分
     def set_actual_worktype_selection(selection_index)
+      # 選択肢のリストをクリック
       @browser.execute_script(
         %Q(document.querySelector('a#id_syuttai_shortname_select_#{@day_index}').click())
       )
-      # ｵﾌｨｽ（技術） を選択
+
+      # 選択肢をクリック
       @browser.execute_script(
-        # %Q(document.querySelector('a#id_kinmu_pull_a_#{@day_index}_2').click())
         %Q(document.querySelector('a#id_kinmu_pull_a_#{@day_index}_#{selection_index}').click())
-        # 本来は「1」
-        # 2020/03/31 分の選択肢からは 09001730 という項目が追加された模様
-        # %Q(document.querySelector('a#id_kinmu_pull_a_#{day_index}_1').click())
       )
     end
 
